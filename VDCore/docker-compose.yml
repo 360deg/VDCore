@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  vdcore:
+    image: "360deg/vdcore"
+    ports: 
+      - 5228:80
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t

@@ -2,20 +2,14 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <UserSecretsId>aspnet-VDCore-F96FB56E-A3A3-41A8-A65D-93C680285821</UserSecretsId>
-        <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <Title>VDCore</Title>
-        <Authors>Vladyslav Pecherytsia</Authors>
-        <Description>VDCore == Vlad Core project. 
-Designed for fast project development from scratch.</Description>
-        <Copyright>vlads.top</Copyright>
+        <Authors>Vlad Pecherytsia</Authors>
+        <Description>Project designed for fast setting up new ASP .Net applications from scratch.</Description>
+        <PackageLicenseUrl>vlads.top</PackageLicenseUrl>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.4" />
-        <PackageReference Include="Microsoft.Identity.Web" Version="1.1.0" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.0-preview3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
 

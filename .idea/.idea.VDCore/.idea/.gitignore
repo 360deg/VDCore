@@ -1,13 +1,13 @@
-﻿# Default ignored files
+# Default ignored files
 /shelf/
 /workspace.xml
 # Rider ignored files
-/.idea.VDCore.iml
-/modules.xml
 /contentModel.xml
+/modules.xml
 /projectSettingsUpdater.xml
+/.idea.VDCore.iml
 # Datasource local storage ignored files
-/../../../../../../:\dev3\VDCore\.idea\.idea.VDCore\.idea/dataSources/
+/dataSources/
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/

@@ -27,12 +27,33 @@ namespace VDCore
         {
             services.AddControllers();
             services.AddDbContext<CoreDbContext>(options =>
+                
+                // DbContext options for MariaDB 10.1.48
+                // For usage install NuGet packages:
+                //
+                // Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0-preview.3.21201.4"
+                // Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.5"
+                //
+                // ===========================================================================
+                //
                 options.UseMySql( 
                     Configuration.GetConnectionString("VDCoreConnection"), 
                     mySqlOptions => mySqlOptions.ServerVersion(new Version(10, 1, 48), ServerType.MariaDb)
                     )
                 );
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo
+            
+                // DbContext options for Latest Postgres database
+                // For usage install NuGet packages:
+                //
+                // Include="EntityFramework" Version="6.4.4"
+                // Include="Microsoft.EntityFrameworkCore" Version="6.0.0-preview.3.21201.2"
+                // Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.0-preview3"
+                //
+                // ===========================================================================
+                //
+                // options.UseNpgsql(Configuration.GetConnectionString("PostgresLocal")));
+
+                services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = _projectInfo.GetSection("ProjectName").Value, 
                     Version = _projectInfo.GetSection("Version").Value

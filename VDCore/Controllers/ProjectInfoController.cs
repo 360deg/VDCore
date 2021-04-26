@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using VDCore.DBContext.Core;
+using Microsoft.Extensions.Configuration;
 using VDCore.Models.ProjectInfo;
 
 namespace VDCore.Controllers
@@ -9,15 +9,24 @@ namespace VDCore.Controllers
     [Route("[controller]")]
     public class ProjectInfoController : ControllerBase
     {
-        public ProjectInfoController(CoreDbContext context)
+        public ProjectInfoController(IConfiguration iConfig)
         {
+            Configuration = iConfig;
         }
 
+        private IConfiguration Configuration { get; }
+        
         [HttpGet]
         [Route("[action]")]
         public ActionResult<Project> GetProjectInfo()
         {
-            return new Project {ProjectName = "VDCore", Version = "v1.0.0", ReportDate = DateTime.Now};
+            var projectInfo = Configuration.GetSection("ProjectInfo");
+            return new Project
+            {
+                ProjectName = projectInfo.GetSection("ProjectName").Value, 
+                Version = projectInfo.GetSection("Version").Value, 
+                ReportDate = DateTime.Now
+            };
         }
     }
 }

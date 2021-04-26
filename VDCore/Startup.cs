@@ -6,11 +6,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Pomelo.EntityFrameworkCore.MySql.Internal;
+using VDCore.DBContext;
 
 namespace VDCore
 {
@@ -27,6 +32,12 @@ namespace VDCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<CoreDbContext>(options =>
+                options.UseMySql( 
+                    Configuration.GetConnectionString("VDCoreConnection"), 
+                    mySqlOptions => mySqlOptions.ServerVersion(new Version(10, 1, 48), ServerType.MariaDb)
+                    )
+                );
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "VDCore", Version = "v1.0.0"}); });
         }
 

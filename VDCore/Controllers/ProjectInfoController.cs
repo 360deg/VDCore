@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using VDCore.DBContext.Core;
 using VDCore.Models.ProjectInfo;
 
 namespace VDCore.Controllers
@@ -13,16 +9,13 @@ namespace VDCore.Controllers
     [Route("[controller]")]
     public class ProjectInfoController : ControllerBase
     {
-        
-        private readonly ILogger<ProjectInfoController> _logger;
-
-        public ProjectInfoController(ILogger<ProjectInfoController> logger)
+        public ProjectInfoController(CoreDbContext context)
         {
-            _logger = logger;
         }
 
         [HttpGet]
-        public ActionResult<Project> Get()
+        [Route("[action]")]
+        public ActionResult<Project> GetProjectInfo()
         {
             return new Project {ProjectName = "VDCore", Version = "v1.0.0", ReportDate = DateTime.Now};
         }

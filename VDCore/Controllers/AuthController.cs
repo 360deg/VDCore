@@ -18,20 +18,35 @@ namespace VDCore.Controllers
     [Route("[controller]")]
     public class AuthController: ControllerBase
     {
-        private CoreDbContext _context;
+        private readonly CoreDbContext _context;
         public AuthController(CoreDbContext context)
         {
             _context = context;
         }
         
-        /*
-         * Method returns access_token for user if request successfully passed
-         */
+        /// <summary>
+        /// Method returns access_token for user if request successfully passed.
+        /// </summary>
+        /// <param name="username">user login</param>
+        /// <param name="password">raw user password</param>
+        /// <remarks>
+        /// Sample value of message
+        /// 
+        ///     {
+        ///        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodasd2",
+        ///        "username": "admin"
+        ///     }
+        ///     
+        /// </remarks>
+        /// <response code="202">Accepted</response>  
+        /// <response code="400">Bad request</response>  
         [HttpPost]
         [Route("[action]")]
         public IActionResult Login(string username, string password)
         {
+            // TODO temporary line
             Console.WriteLine(_context.Database.ExecuteSqlRaw("Select 1"));
+            
             var identity = new AuthIdentity().GetIdentity(username, password);
             if (identity == null)
             {

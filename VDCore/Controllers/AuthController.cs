@@ -9,24 +9,30 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using VDCore.Authorization;
+using VDCore.DBContext.Core;
 
 namespace VDCore.Controllers
 {
     [Route("[controller]")]
     public class AuthController: ControllerBase
     {
-        // тестовые данные вместо использования базы данных
-        private List<Person> people = new List<Person>
+        private CoreDbContext _context;
+        public AuthController(CoreDbContext context)
         {
-            new Person { Login="admin@gmail.com", Password="12345", Role = "admin" },
-            new Person { Login="qwerty@gmail.com", Password="55555", Role = "user" }
-        };
+            _context = context;
+        }
         
-        [HttpPost("/token")]
-        public IActionResult Token(string username, string password)
+        /*
+         * Method returns access_token for user if request successfully passed
+         */
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult Login(string username, string password)
         {
-            var identity = GetIdentity(username, password);
+            Console.WriteLine(_context.Database.ExecuteSqlRaw("Select 1"));
+            var identity = new AuthIdentity().GetIdentity(username, password);
             if (identity == null)
             {
                 return BadRequest(new { errorText = "Invalid username or password." });
@@ -51,25 +57,6 @@ namespace VDCore.Controllers
             return Accepted(response);
         }
         
-        private ClaimsIdentity GetIdentity(string username, string password)
-        {
-            Person person = people.FirstOrDefault(x => x.Login == username && x.Password == password);
-            if (person != null)
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Login),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role)
-                };
-                ClaimsIdentity claimsIdentity =
-                    new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                        ClaimsIdentity.DefaultRoleClaimType);
-                return claimsIdentity;
-            }
- 
-            // If user not found
-            return null;
-        }
         
         [Authorize]
         [HttpGet]

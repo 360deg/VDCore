@@ -35,6 +35,7 @@ namespace VDCore
                 return Path.Combine(basePath, fileName);
             }
         }
+       
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();

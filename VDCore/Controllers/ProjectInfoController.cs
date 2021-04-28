@@ -1,30 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using VDCore.Models.ProjectInfo;
 
 namespace VDCore.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class ProjectInfoController : ControllerBase
     {
-        
-        private readonly ILogger<ProjectInfoController> _logger;
-
-        public ProjectInfoController(ILogger<ProjectInfoController> logger)
+        public ProjectInfoController(IConfiguration iConfig)
         {
-            _logger = logger;
+            Configuration = iConfig;
         }
 
+        private IConfiguration Configuration { get; }
+        
         [HttpGet]
-        public ActionResult<Project> Get()
+        [Route("[action]")]
+        public ActionResult<Project> GetProjectInfo()
         {
-            return new Project {ProjectName = "VDCore", Version = "v1.0.0", ReportDate = DateTime.Now};
+            var projectInfo = Configuration.GetSection("ProjectInfo");
+            return new Project
+            {
+                ProjectName = projectInfo.GetSection("ProjectName").Value, 
+                Version = projectInfo.GetSection("Version").Value, 
+                ReportDate = DateTime.Now
+            };
         }
     }
 }

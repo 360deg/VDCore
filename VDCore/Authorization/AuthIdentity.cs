@@ -30,18 +30,15 @@ namespace VDCore.Authorization
                 new Claim(ClaimTypes.UserData, usr.CoreId.ToString())
             };
 
-            for (int i = 0; i < roleArray.Length; i++)
+            foreach (var role in roleArray)
             {
-                claims.Add(new Claim(ClaimTypes.Role, roleArray[i]));
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
             
             ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
                     ClaimsIdentity.DefaultRoleClaimType);
             return claimsIdentity;
-
-            // If user not found
-            return null;
         }
     }
 }

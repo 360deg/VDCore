@@ -8,15 +8,15 @@ using Microsoft.EntityFrameworkCore;
 using VDCore.Authorization;
 using VDCore.DBContext.Core;
 using VDCore.DBContext.Core.Models;
-using VDCore.Models.Auth;
+using VDCore.Models.User;
 
 namespace VDCore.Controllers
 {
     [Route("[controller]")]
-    public class StatusController: ControllerBase
+    public class UserController: ControllerBase
     {
         private readonly CoreDbContext _context;
-        public StatusController(CoreDbContext context)
+        public UserController(CoreDbContext context)
         {
             _context = context;
         }
@@ -26,7 +26,7 @@ namespace VDCore.Controllers
         /// </summary>
         [Authorize]
         [HttpGet]
-        [Route("User/[action]")]
+        [Route("[action]")]
         public async Task<ActionResult<IEnumerable<User>>> GetList()
         {
             return await _context.Users.ToListAsync();
@@ -38,7 +38,7 @@ namespace VDCore.Controllers
         /// <param name="coreId">unique guid for VDCore application</param>
         /// <response code="404">Not Found</response>  
         [Authorize]
-        [HttpGet("User/{coreId:guid}")]
+        [HttpGet("{coreId:guid}")]
         public async Task<ActionResult<User>> GetUserById(Guid coreId)
         {
             User user = await _context.Users.FirstOrDefaultAsync(x => x.CoreId == coreId);
@@ -56,7 +56,7 @@ namespace VDCore.Controllers
         /// <response code="201">Created</response>  
         /// <response code="400">Bad request</response>  
         [HttpPost]
-        [Route("User/[action]")]
+        [Route("[action]")]
         public async Task<ActionResult<User>> Add(UserRequest request)
         {
             if (request == null)
@@ -108,7 +108,7 @@ namespace VDCore.Controllers
         /// <response code="404">Not found</response>  
         [Authorize]
         [HttpPut]
-        [Route("User/[action]")]
+        [Route("[action]")]
         public async Task<ActionResult<User>> Update(UserUpdateRequest request)
         {
             if (request == null)
@@ -150,7 +150,7 @@ namespace VDCore.Controllers
         /// <response code="400">Bad request</response>  
         /// <response code="404">Not found</response>  
         [Authorize(Roles = "Administrator")]
-        [HttpDelete("User/{coreId:guid}")]
+        [HttpDelete("{coreId:guid}")]
         public async Task<ActionResult<User>> Delete(Guid coreId)
         {
             if (!_context.Users.Any(x => x.CoreId == coreId))

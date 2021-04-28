@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace VDCore.Models.Auth
+namespace VDCore.Models.User
 {
     public class UserRequest
     {

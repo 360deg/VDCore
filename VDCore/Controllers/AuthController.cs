@@ -1,14 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +24,7 @@ namespace VDCore.Controllers
         }
         
         /// <summary>
-        /// Method returns access_token for user if request successfully passed.
+        /// Returns access_token for user if request successfully passed.
         /// </summary>
         /// <param name="username">user login</param>
         /// <param name="password">raw user password</param>
@@ -77,7 +72,7 @@ namespace VDCore.Controllers
         }
         
         /// <summary>
-        /// Method returns raw user list.
+        /// Returns raw user list.
         /// </summary>
         [Authorize]
         [HttpGet]
@@ -88,7 +83,7 @@ namespace VDCore.Controllers
         }
         
         /// <summary>
-        /// Method returns raw user data by CoreID.
+        /// Returns raw user data by CoreID.
         /// </summary>
         /// <param name="coreId">unique guid for VDCore application</param>
         /// <response code="404">Not Found</response>  
@@ -103,7 +98,7 @@ namespace VDCore.Controllers
         }
  
         /// <summary>
-        /// NO AUTH REQUIRED. Method adds new user to core system and returns created data.
+        /// NO AUTH REQUIRED. Adds new user to core system and returns created data.
         /// </summary>
         /// <remarks>
         /// New User will have default "User" role.
@@ -157,7 +152,7 @@ namespace VDCore.Controllers
         }
         
         /// <summary>
-        /// Method updates user data.
+        /// Updates user data.
         /// </summary>
         /// <response code="400">Bad request</response>  
         /// <response code="404">Not found</response>  
@@ -199,7 +194,7 @@ namespace VDCore.Controllers
         }
         
         /// <summary>
-        /// Method deletes user.
+        /// Deletes user.
         /// </summary>
         /// <param name="coreId">unique guid for VDCore application</param>
         /// <response code="400">Bad request</response>  

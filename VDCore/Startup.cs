@@ -1,10 +1,13 @@
 using System;
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
@@ -23,7 +26,16 @@ namespace VDCore
 
         private IConfiguration Configuration { get; }
         private readonly IConfiguration _projectInfo;
-
+        static string XmlCommentsFilePath
+        {
+            get
+            {
+                var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+                var fileName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name + ".xml";
+                return Path.Combine(basePath, fileName);
+            }
+        }
+       
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -75,6 +87,7 @@ namespace VDCore
 
             services.AddSwaggerGen(c =>
             {
+                c.IncludeXmlComments(XmlCommentsFilePath);
                 c.SwaggerDoc("v1", new OpenApiInfo
                     {
                         Title = _projectInfo.GetSection("ProjectName").Value, 

@@ -6,7 +6,6 @@ using VDCore.Models.ProjectInfo;
 namespace VDCore.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class ProjectInfoController : ControllerBase
     {
         public ProjectInfoController(IConfiguration iConfig)

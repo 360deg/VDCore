@@ -1,32 +1,46 @@
 using Microsoft.AspNetCore.Mvc;
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
-
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text.Json;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using VDCore.Authorization;
+using VDCore.DBContext.Core;
 
 namespace VDCore.Controllers
 {
     [Route("[controller]")]
-    public class AuthController: ControllerBase
+    public class AuthController : ControllerBase
     {
-        // тестовые данные вместо использования базы данных
-        private List<Person> people = new List<Person>
+        private readonly CoreDbContext _context;
+        public AuthController(CoreDbContext context)
         {
-            new Person { Login="admin@gmail.com", Password="12345", Role = "admin" },
-            new Person { Login="qwerty@gmail.com", Password="55555", Role = "user" }
-        };
+            _context = context;
+        }
         
-        [HttpPost("/token")]
-        public IActionResult Token(string username, string password)
+        /// <summary>
+        /// Returns access_token for user if request successfully passed.
+        /// </summary>
+        /// <param name="username">user login</param>
+        /// <param name="password">raw user password</param>
+        /// <remarks>
+        /// Sample value of response.
+        /// 
+        ///     {
+        ///        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodasd2",
+        ///        "username": "admin"
+        ///     }
+        ///     
+        /// </remarks>
+        /// <response code="202">Accepted</response>  
+        /// <response code="400">Bad request</response>  
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult Login(string username, string password)
         {
-            var identity = GetIdentity(username, password);
+            // TODO temporary line
+            Console.WriteLine(_context.Database.ExecuteSqlRaw("Select 1"));
+            
+            var identity = new AuthIdentity(_context).GetIdentity(username, password);
             if (identity == null)
             {
                 return BadRequest(new { errorText = "Invalid username or password." });
@@ -49,42 +63,22 @@ namespace VDCore.Controllers
             };
             
             return Accepted(response);
-        }
+        }        
         
-        private ClaimsIdentity GetIdentity(string username, string password)
-        {
-            Person person = people.FirstOrDefault(x => x.Login == username && x.Password == password);
-            if (person != null)
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Login),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role)
-                };
-                ClaimsIdentity claimsIdentity =
-                    new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                        ClaimsIdentity.DefaultRoleClaimType);
-                return claimsIdentity;
-            }
- 
-            // If user not found
-            return null;
-        }
-        
-        [Authorize]
-        [HttpGet]
-        [Route("getlogin")]
-        public IActionResult GetLogin()
-        {
-            return Ok($"Ваш логин: {User.Identity.Name}");
-        }
-         
-        [Authorize(Roles = "admin")]
-        [HttpGet]
-        [Route("getrole")]
-        public IActionResult GetRole()
-        {
-            return Ok("Ваша роль: администратор");
-        }
+        // [Authorize]
+        // [HttpGet]
+        // [Route("getlogin")]
+        // public IActionResult GetLogin()
+        // {
+        //     return Ok($"Ваш логин: {User.Identity.Name}");
+        // }
+        //  
+        // [Authorize(Roles = "admin")]
+        // [HttpGet]
+        // [Route("getrole")]
+        // public IActionResult GetRole()
+        // {
+        //     return Ok("Ваша роль: администратор");
+        // }
     }
 }

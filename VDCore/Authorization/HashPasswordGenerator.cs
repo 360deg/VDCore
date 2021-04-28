@@ -11,15 +11,13 @@ namespace VDCore.Authorization
          */
         private const int SaltSize = 128 / 8;
         private const int NumBytesRequested = 256 / 8;
-        private const int IterCount = 1228;
+        private const int IterCount = 1000;
         private const KeyDerivationPrf Prf = KeyDerivationPrf.HMACSHA1;
         
         /// <summary>
         /// Function generates hash from password and returns it as String. To verify use VerifyHash function.
         /// </summary>
-        /// <param name="rawString"></param>
-        /// <returns></returns>
-        public static string GetHashFromString(string rawString)
+        public static string GenerateHash(string rawString)
         {
             byte[] salt = new byte[SaltSize];
             using (var rng = RandomNumberGenerator.Create())
@@ -43,6 +41,9 @@ namespace VDCore.Authorization
             return Convert.ToBase64String(outputBytes);
         }
 
+        /// <summary>
+        /// Function check if password hash equal to password. Returns bool.
+        /// </summary>
         public static bool VerifyHash(string hashedPasswordString, string password)
         {
             byte[] hashedPassword = Convert.FromBase64String(hashedPasswordString);

@@ -51,7 +51,7 @@ namespace VDCore.DBContext.Core
             {
                 UserId = adminUserId,
                 Login = adminLogin,
-                Password = HashPasswordGenerator.GetHashFromString(adminPassword),
+                Password = HashPasswordGenerator.GenerateHash(adminPassword),
                 CoreId = Guid.NewGuid(),
                 UserStatusId = activeStatus.UserStatusId
             };

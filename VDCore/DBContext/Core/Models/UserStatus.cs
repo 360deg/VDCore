@@ -11,6 +11,6 @@ namespace VDCore.DBContext.Core.Models
         public int UserStatusId { get; set; }
         [MaxLength(64, ErrorMessage = "StatusName length should be less than 64 chars.")]
         public string StatusName { get; set; }
-        public virtual ICollection<User> User { get; set; }
+        private ICollection<User> User { get; set; }
     }
 }

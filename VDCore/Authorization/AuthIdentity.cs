@@ -1,36 +1,45 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using VDCore.Controllers;
+using VDCore.DBContext.Core;
+using VDCore.DBContext.Core.Models;
 
 namespace VDCore.Authorization
 {
     public class AuthIdentity
     {
-        // тестовые данные вместо использования базы данных
-        private List<Person> people = new List<Person>
+        private readonly CoreDbContext _context;
+        public AuthIdentity(CoreDbContext context)
         {
-            new Person { Login="admin@gmail.com", Password="12345", Role = "admin" },
-            new Person { Login="qwerty@gmail.com", Password="55555", Role = "user" },
-            new Person { Login="1", Password="1", Role = "admin" }
-        };
+            _context = context;
+        }
         
         public ClaimsIdentity GetIdentity(string username, string password)
         {
-            Person person = people.FirstOrDefault(x => x.Login == username && x.Password == password);
-            if (person != null)
+            User usr = _context.Users.First(u => u.Login == username);
+            if (!HashPasswordGenerator.VerifyHash(usr.Password, password))
             {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Login),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role)
-                };
-                ClaimsIdentity claimsIdentity =
-                    new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                        ClaimsIdentity.DefaultRoleClaimType);
-                return claimsIdentity;
+                return null;
             }
- 
+
+            string[] roleArray = _context.UserRoles.Where(ur => ur.UserId == usr.UserId).Select(ur => ur.Role.Name).ToArray();
+            
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, usr.Login),
+                new Claim(ClaimTypes.UserData, usr.CoreId.ToString())
+            };
+
+            for (int i = 0; i < roleArray.Length; i++)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, roleArray[i]));
+            }
+            
+            ClaimsIdentity claimsIdentity =
+                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                    ClaimsIdentity.DefaultRoleClaimType);
+            return claimsIdentity;
+
             // If user not found
             return null;
         }

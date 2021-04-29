@@ -26,6 +26,7 @@ namespace VDCore
 
         private IConfiguration Configuration { get; }
         private readonly IConfiguration _projectInfo;
+        readonly string AllowSpecificOrigins = "_AllowSpecificOrigins";
         static string XmlCommentsFilePath
         {
             get
@@ -118,6 +119,14 @@ namespace VDCore
                     }
                 });
             });
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: AllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:4200", "http://localhost:8080");
+                    });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -139,6 +148,7 @@ namespace VDCore
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors(AllowSpecificOrigins);
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

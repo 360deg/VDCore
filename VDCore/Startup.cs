@@ -124,7 +124,10 @@ namespace VDCore
                 options.AddPolicy(name: AllowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200", "http://localhost:8080");
+                        builder.AllowAnyOrigin()
+                        // builder.WithOrigins("http://localhost:4200", "http://localhost:8080")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                     });
             });
         }

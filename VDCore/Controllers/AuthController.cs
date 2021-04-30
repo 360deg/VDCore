@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.EntityFrameworkCore;
 using VDCore.Authorization;
 using VDCore.DBContext.Core;
+using VDCore.Models;
 
 namespace VDCore.Controllers
 {
@@ -20,8 +20,7 @@ namespace VDCore.Controllers
         /// <summary>
         /// Returns access_token for user if request successfully passed.
         /// </summary>
-        /// <param name="username">user login</param>
-        /// <param name="password">raw user password</param>
+        /// <param name="request">User login and password</param>
         /// <remarks>
         /// Sample value of response.
         /// 
@@ -35,12 +34,9 @@ namespace VDCore.Controllers
         /// <response code="400">Bad request</response>  
         [HttpPost]
         [Route("[action]")]
-        public IActionResult Login(string username, string password)
+        public IActionResult Login([FromBody] Login request)
         {
-            // TODO temporary line
-            Console.WriteLine(_context.Database.ExecuteSqlRaw("Select 1"));
-            
-            var identity = new AuthIdentity(_context).GetIdentity(username, password);
+            var identity = new AuthIdentity(_context).GetIdentity(request.UserName, request.Password);
             if (identity == null)
             {
                 return BadRequest(new { errorText = "Invalid username or password." });

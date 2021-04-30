@@ -7,6 +7,6 @@ namespace VDCore.Models.User
     {
         [Required(ErrorMessage = "CoreId is required!")]
         [MinLength(36)]
-        public Guid CoreId { get; set; }
+        public String CoreId { get; set; }
     }
 }

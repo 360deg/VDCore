@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -186,10 +187,18 @@ namespace VDCore.Controllers
             {
                 return NotFound(new { errorText = "User with coreId " + coreId + " is not found."});
             }
-            // TODO add Identity.CoreId
-            // TODO add checker for not removing yourself
+            
+            var identity = (ClaimsIdentity)User.Identity;
+            IEnumerable<Claim> claims = identity?.Claims;
+            string userCoreId = claims?.FirstOrDefault(x => x.Type.Equals(ClaimTypes.UserData, StringComparison.OrdinalIgnoreCase))?.Value;
+
+            if (userCoreId == coreId.ToString())
+            {
+                return BadRequest(new {errorText = "User can not delete itself."});
+            }
             
             User user = _context.Users.First(x => x.CoreId == coreId);
+            
             _context.UserRoles.RemoveRange(_context.UserRoles.Where(us => us.UserId == user.UserId));
             _context.SaveChanges();
             _context.Users.Remove(user);

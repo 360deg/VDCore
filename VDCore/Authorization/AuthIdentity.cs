@@ -42,12 +42,9 @@ namespace VDCore.Authorization
                 new Claim(ClaimsIdentity.DefaultNameClaimType, usr.Login),
                 new Claim(ClaimTypes.UserData, usr.CoreId.ToString())
             };
-
-            foreach (var role in roleArray)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
             
+            claims.AddRange(roleArray.Select(role => new Claim(ClaimTypes.Role, role)));
+
             ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
                     ClaimsIdentity.DefaultRoleClaimType);

@@ -27,9 +27,16 @@ namespace VDCore.Controllers
         [Authorize]
         [HttpGet]
         [Route("[action]")]
-        public async Task<ActionResult<IEnumerable<User>>> GetList()
+        public async Task<ActionResult<IEnumerable<UserResponse>>> GetList()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Select(u => new UserResponse()
+                {
+                    Login = u.Login, 
+                    Password = u.Password, 
+                    UserStatusId = u.UserStatusId, 
+                    CoreId = u.CoreId
+                }
+            ).ToListAsync();
         }
         
         /// <summary>
@@ -39,17 +46,26 @@ namespace VDCore.Controllers
         /// <response code="404">Not Found</response>  
         [Authorize]
         [HttpGet("{coreId:guid}")]
-        public async Task<ActionResult<User>> GetUserById(Guid coreId)
+        public async Task<ActionResult<UserResponse>> GetUserById(Guid coreId)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(x => x.CoreId == coreId);
+            UserResponse user = await _context.Users.Where(u => u.CoreId == coreId).Select(u => new UserResponse()
+                {
+                    Login = u.Login, 
+                    Password = u.Password, 
+                    UserStatusId = u.UserStatusId, 
+                    CoreId = u.CoreId
+                }
+            ).FirstAsync();
+            
             if (user == null)
-                return NotFound();
+                return NotFound(new {errorText = "User not found."});
             return new ObjectResult(user);
         }
  
         /// <summary>
         /// NO AUTH REQUIRED. Adds new user to core system and returns created data.
         /// </summary>
+        /// <param name="request">User sequence.</param>
         /// <remarks>
         /// New User will have default "User" role.
         /// </remarks>
@@ -57,7 +73,7 @@ namespace VDCore.Controllers
         /// <response code="400">Bad request</response>  
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult<User>> Add(UserRequest request)
+        public async Task<ActionResult<UserResponse>> Add([FromBody] UserRequest request)
         {
             if (request == null)
             {
@@ -98,30 +114,37 @@ namespace VDCore.Controllers
             await _context.SaveChangesAsync();
 
             Response.StatusCode = 201;
-            return newUser;
+            return new UserResponse()
+            {
+                Login = newUser.Login, 
+                Password = newUser.Password, 
+                UserStatusId = newUser.UserStatusId, 
+                CoreId = newUser.CoreId
+            };
         }
         
         /// <summary>
         /// Updates user data.
         /// </summary>
+        /// <param name="request">User sequence with coreId.</param>
         /// <response code="400">Bad request</response>  
         /// <response code="404">Not found</response>  
         [Authorize]
         [HttpPut]
         [Route("[action]")]
-        public async Task<ActionResult<User>> Update(UserUpdateRequest request)
+        public async Task<ActionResult<UserResponse>> Update([FromBody] UserUpdateRequest request)
         {
             if (request == null)
             {
                 return BadRequest(new { errorText = "No request data."});
             }
             
-            if (!_context.Users.Any(x => x.CoreId == request.CoreId))
+            if (!_context.Users.Any(x => x.CoreId == Guid.Parse(request.CoreId)))
             {
                 return NotFound(new { errorText = "User with coreId " + request.CoreId + " is not found."});
             }
 
-            User userForUpdate = _context.Users.First(u => u.CoreId == request.CoreId);
+            User userForUpdate = _context.Users.First(u => u.CoreId == Guid.Parse(request.CoreId));
 
             if (_context.Users.Any(u => u.Login == request.Login))
             {
@@ -140,7 +163,13 @@ namespace VDCore.Controllers
             _context.Update(userForUpdate);
             
             await _context.SaveChangesAsync();
-            return Ok(userForUpdate);
+            return Ok( new UserResponse()
+            {
+                Login = userForUpdate.Login, 
+                Password = userForUpdate.Password, 
+                UserStatusId = userForUpdate.UserStatusId, 
+                CoreId = userForUpdate.CoreId
+            });
         }
         
         /// <summary>
@@ -151,7 +180,7 @@ namespace VDCore.Controllers
         /// <response code="404">Not found</response>  
         [Authorize(Roles = "Administrator")]
         [HttpDelete("{coreId:guid}")]
-        public async Task<ActionResult<User>> Delete(Guid coreId)
+        public async Task<ActionResult<UserResponse>> Delete(Guid coreId)
         {
             if (!_context.Users.Any(x => x.CoreId == coreId))
             {
@@ -161,10 +190,17 @@ namespace VDCore.Controllers
             // TODO add checker for not removing yourself
             
             User user = _context.Users.First(x => x.CoreId == coreId);
-            
+            _context.UserRoles.RemoveRange(_context.UserRoles.Where(us => us.UserId == user.UserId));
+            _context.SaveChanges();
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
-            return Ok(user);
+            return Ok( new UserResponse()
+            {
+                Login = user.Login, 
+                Password = user.Password, 
+                UserStatusId = user.UserStatusId, 
+                CoreId = user.CoreId
+            });
         }
     }
 }

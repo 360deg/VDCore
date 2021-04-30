@@ -27,9 +27,16 @@ namespace VDCore.Controllers
         [Authorize]
         [HttpGet]
         [Route("[action]")]
-        public async Task<ActionResult<IEnumerable<User>>> GetList()
+        public async Task<ActionResult<IEnumerable<UserResponse>>> GetList()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Select(u => new UserResponse()
+                {
+                    Login = u.Login, 
+                    Password = u.Password, 
+                    UserStatusId = u.UserStatusId, 
+                    CoreId = u.CoreId
+                }
+            ).ToListAsync();
         }
         
         /// <summary>
@@ -39,11 +46,19 @@ namespace VDCore.Controllers
         /// <response code="404">Not Found</response>  
         [Authorize]
         [HttpGet("{coreId:guid}")]
-        public async Task<ActionResult<User>> GetUserById(Guid coreId)
+        public async Task<ActionResult<UserResponse>> GetUserById(Guid coreId)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(x => x.CoreId == coreId);
+            UserResponse user = await _context.Users.Where(u => u.CoreId == coreId).Select(u => new UserResponse()
+                {
+                    Login = u.Login, 
+                    Password = u.Password, 
+                    UserStatusId = u.UserStatusId, 
+                    CoreId = u.CoreId
+                }
+            ).FirstAsync();
+            
             if (user == null)
-                return NotFound();
+                return NotFound(new {errorText = "User not found."});
             return new ObjectResult(user);
         }
  
@@ -57,7 +72,7 @@ namespace VDCore.Controllers
         /// <response code="400">Bad request</response>  
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult<User>> Add(UserRequest request)
+        public async Task<ActionResult<User>> Add([FromBody] UserRequest request)
         {
             if (request == null)
             {
@@ -109,7 +124,7 @@ namespace VDCore.Controllers
         [Authorize]
         [HttpPut]
         [Route("[action]")]
-        public async Task<ActionResult<User>> Update(UserUpdateRequest request)
+        public async Task<ActionResult<User>> Update([FromBody] UserUpdateRequest request)
         {
             if (request == null)
             {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -16,7 +17,19 @@ namespace VDCore.Authorization
         
         public ClaimsIdentity GetIdentity(string username, string password)
         {
-            User usr = _context.Users.First(u => u.Login == username);
+            List<int> activeUserStatusId =
+                _context.UserStatus.Where(us => us.StatusName == "Active").Select(us => us.UserStatusId).ToList();
+
+            User usr;
+            try
+            {
+                usr = _context.Users.First(u => u.Login == username && u.UserStatusId == activeUserStatusId[0]);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
             if (!HashPasswordGenerator.VerifyHash(usr.Password, password))
             {
                 return null;
@@ -38,6 +51,7 @@ namespace VDCore.Authorization
             ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
                     ClaimsIdentity.DefaultRoleClaimType);
+            
             return claimsIdentity;
         }
     }

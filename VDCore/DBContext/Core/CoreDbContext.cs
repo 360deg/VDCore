@@ -25,7 +25,7 @@ namespace VDCore.DBContext.Core
             // Setting default data into variable
             const int adminRoleId = 1;
             const int activeStatusId = 1;
-            const int adminUserId = 1;
+            const long adminUserId = 1;
             const int userRoleId = 1;
             const string adminLogin = "SuperAdmin";
             const string adminPassword = "secret.password";

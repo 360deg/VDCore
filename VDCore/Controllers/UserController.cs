@@ -10,6 +10,8 @@ using VDCore.Authorization;
 using VDCore.DBContext.Core;
 using VDCore.DBContext.Core.Models;
 using VDCore.Models.User;
+using VDCoreLib;
+using X.PagedList;
 
 namespace VDCore.Controllers
 {
@@ -28,16 +30,18 @@ namespace VDCore.Controllers
         [Authorize]
         [HttpGet]
         [Route("[action]")]
-        public async Task<ActionResult<IEnumerable<UserResponse>>> GetList()
+        public async Task<IPagedList<UserResponse>> GetList(Pagination pagination)
         {
-            return await _context.Users.Select(u => new UserResponse()
+            var result = await _context.Users.Select(u => new UserResponse()
                 {
-                    Login = u.Login, 
-                    Password = u.Password, 
-                    UserStatusId = u.UserStatusId, 
+                    Login = u.Login,
+                    Password = u.Password,
+                    UserStatusId = u.UserStatusId,
                     CoreId = u.CoreId
                 }
-            ).ToListAsync();
+            ).ToPagedListAsync(pagination.PageNumber, pagination.RowsOnPage);
+
+            return result;
         }
         
         /// <summary>

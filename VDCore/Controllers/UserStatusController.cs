@@ -1,10 +1,10 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using VDCore.DBContext.Core;
 using VDCore.DBContext.Core.Models;
+using VDCoreLib;
+using X.PagedList;
 
 namespace VDCore.Controllers
 {
@@ -23,9 +23,9 @@ namespace VDCore.Controllers
         [Authorize]
         [HttpGet]
         [Route("[action]")]
-        public async Task<ActionResult<IEnumerable<UserStatus>>> GetList()
+        public async Task<IPagedList<UserStatus>> GetList(Pagination pagination)
         {
-            return await _context.UserStatus.ToListAsync();
+            return await _context.UserStatus.ToPagedListAsync(pagination.PageNumber, pagination.RowsOnPage);
         }
     }
 }

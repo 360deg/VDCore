@@ -28,6 +28,9 @@ namespace VDCoreLib
         private int _rowsOnPage;
         private int _pageNumber = 1;
         
+        /// <summary>
+        /// Max amount of rows displayed on single page.
+        /// </summary>
         [Required]
         public int RowsOnPage
         {
@@ -35,6 +38,9 @@ namespace VDCoreLib
             set => _rowsOnPage = value < 0 ? 0 : value;
         }
 
+        /// <summary>
+        /// Current page number.
+        /// </summary>
         [Required]
         public int PageNumber
         {

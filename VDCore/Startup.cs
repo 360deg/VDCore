@@ -134,9 +134,8 @@ namespace VDCore
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // TODO remove comments after publish
-            // if (env.IsDevelopment())
-            // {
+            if (bool.Parse(Configuration.GetSection("EnableSwagger").Value))
+            {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
@@ -146,8 +145,7 @@ namespace VDCore
                         _projectInfo.GetSection("ProjectName").Value + " " + _projectInfo.GetSection("Version").Value
                     );
                 });
-            // TODO remove comments after publish
-            // }
+            }
 
             app.UseHttpsRedirection();
             app.UseRouting();

@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDCore", "VDCore\VDCore.csproj", "{4386253B-F20E-4556-BCAA-D64E675DEED8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDCoreLib", "VDCoreLib\VDCoreLib.csproj", "{496074C1-45C1-4DE9-815D-F49E98B77C74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{4386253B-F20E-4556-BCAA-D64E675DEED8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4386253B-F20E-4556-BCAA-D64E675DEED8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4386253B-F20E-4556-BCAA-D64E675DEED8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{496074C1-45C1-4DE9-815D-F49E98B77C74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{496074C1-45C1-4DE9-815D-F49E98B77C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{496074C1-45C1-4DE9-815D-F49E98B77C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{496074C1-45C1-4DE9-815D-F49E98B77C74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

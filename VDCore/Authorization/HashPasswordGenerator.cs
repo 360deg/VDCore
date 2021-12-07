@@ -6,9 +6,7 @@ namespace VDCore.Authorization
 {
     public static class HashPasswordGenerator
     {
-        /*
-         * Password hash settings. 
-         */
+        /* Password hash settings */
         private const int SaltSize = 128 / 8;
         private const int NumBytesRequested = 256 / 8;
         private const int IterCount = 1000;

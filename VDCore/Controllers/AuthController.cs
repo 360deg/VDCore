@@ -59,22 +59,6 @@ namespace VDCore.Controllers
             };
             
             return Accepted(response);
-        }        
-        
-        // [Authorize]
-        // [HttpGet]
-        // [Route("getlogin")]
-        // public IActionResult GetLogin()
-        // {
-        //     return Ok($"Ваш логин: {User.Identity.Name}");
-        // }
-        //  
-        // [Authorize(Roles = "admin")]
-        // [HttpGet]
-        // [Route("getrole")]
-        // public IActionResult GetRole()
-        // {
-        //     return Ok("Ваша роль: администратор");
-        // }
+        }
     }
 }

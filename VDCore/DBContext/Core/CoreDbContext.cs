@@ -7,9 +7,7 @@ namespace VDCore.DBContext.Core
 {
     public class CoreDbContext: DbContext
     {
-        /*
-         * VDCore sequences.
-         */
+        /* VDCore sequences. */
         public DbSet<UserStatus> UserStatus { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<User> Users { get; set; }
@@ -30,23 +28,17 @@ namespace VDCore.DBContext.Core
             const string adminLogin = "SuperAdmin";
             const string adminPassword = "secret.password";
             
-            /*
-             * Sets default user roles in VDCore.Roles table
-             */
+            // Sets default user roles in VDCore.Roles table
             Role adminRole = new Role() {RoleId = adminRoleId, Name = "Administrator"};
             Role userRole = new Role() {RoleId = adminRoleId + 1, Name = "User"};
             modelBuilder.Entity<Role>().HasData(adminRole, userRole);
             
-            /*
-             * Sets default user roles in VDCore.UserStatus table
-             */
+            // Sets default user roles in VDCore.UserStatus table
             UserStatus activeStatus = new UserStatus() {UserStatusId = activeStatusId, StatusName = "Active"};
             UserStatus disabledStatus = new UserStatus() {UserStatusId = activeStatusId + 1, StatusName = "Disabled"};
             modelBuilder.Entity<UserStatus>().HasData(activeStatus, disabledStatus);
             
-            /*
-             * Adds default admin user
-             */
+            // Adds default admin user
             User adminUser = new User()
             {
                 UserId = adminUserId,

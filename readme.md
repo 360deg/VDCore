@@ -1,4 +1,5 @@
-﻿# VDCore v 1.0.4
+﻿# WARNING: a lot of bad practices here!
+# VDCore v 1.0.5
 ## DATABASE
 #### Postgres: 
 `docker pull postges`
